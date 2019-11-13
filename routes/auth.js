@@ -9,14 +9,14 @@ const User = require("../models/User");
 const {
   isLoggedIn,
   isNotLoggedIn,
-  validationLoggin
+  validationLoggin,
+  validationSignUp
 } = require("../helpers/middlewares");
 
 router.get('/me', isLoggedIn(), (req, res, next) => {
   req.session.currentUser.password = '*';
   res.json(req.session.currentUser);
 });
-
 
 router.post('/login', isNotLoggedIn(), validationLoggin(), async (req, res, next) => {
   const { usernameOrEmail, password } = req.body;
@@ -50,8 +50,7 @@ router.post('/login', isNotLoggedIn(), validationLoggin(), async (req, res, next
 
 router.post(
   "/signup",
-  isNotLoggedIn(),
-  validationLoggin(),
+  isNotLoggedIn(), validationSignUp(),
   async (req, res, next) => {
     const { username, password, email } = req.body;
 

@@ -12,7 +12,8 @@ router.get('/', isLoggedIn(), (req, res, next) => {
     .then((product) => {
       res.json(product)
     })
-    .catch(err => console.log(err)
+    .catch(err =>
+      next(err)
     )
 });
 
@@ -22,9 +23,34 @@ router.post('/', isLoggedIn(), (req, res, next) => {
   Product.create({ title, description, price, owner, category, image })
     .then((product) => {
       res.json(product)
+      res.status(200)
     })
-    .catch(err => console.log(err)
+    .catch(err =>
+      next(err)
     )
 });
+
+router.put('/:id', isLoggedIn(), (req, res, next) => {
+  const { title, description, price, category, image } = req.body;
+  const productId = req.params.id;
+  const owner = req.session.currentUser._id;
+  Product.findById(productId)
+    .then((product) => {
+      if (product.owner.equals(owner)) {
+        Product.findByIdAndUpdate(productId, { title, description, price, owner, category, image }, { new: true })
+          .then(editedProduct => {
+            res.json(editedProduct)
+            res.status(200)
+          })
+          .catch(err =>
+            next(err))
+      } else {
+        next(createError(403))
+      }
+    })
+    .catch(err => {
+      next(err)
+    })
+})
 
 module.exports = router;
