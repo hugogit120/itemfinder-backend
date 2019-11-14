@@ -1,18 +1,18 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const questionSchema = new Schema({
-    owner: { type: Schema.Types.ObjectId, ref: 'User' },
-    body: String,
-    product: { type: Schema.Types.ObjectId, ref: 'Product' },
-    answer: String
-  }, {
-    timestamps: {
-      createdAt: 'created_at',
-      updatedAt: 'updated_at'
-    },
-  });
+const commentSchema = new Schema({
+  owner: { type: Schema.Types.ObjectId, ref: 'User' },
+  body: String,
+  product: { type: Schema.Types.ObjectId, ref: 'Product' },
+  answer: String
+}, {
+  timestamps: {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at'
+  },
+});
 
-  const Question = mongoose.model('Question', questionSchema);
-  
-  module.exports = Question;
+const Comment = mongoose.model('Comment', commentSchema);
+
+module.exports = Comment;

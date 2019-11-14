@@ -8,7 +8,18 @@ const {
 } = require("../helpers/middlewares");
 
 router.get('/', isLoggedIn(), (req, res, next) => {
-  Product.find()
+  Product.find().populate("owner")
+    .then((product) => {
+      res.json(product)
+    })
+    .catch(err =>
+      next(err)
+    )
+});
+
+router.get('/:id', isLoggedIn(), (req, res, next) => {
+  const productId = req.params.id
+  Product.findById(productId)
     .then((product) => {
       res.json(product)
     })
@@ -52,5 +63,30 @@ router.put('/:id', isLoggedIn(), (req, res, next) => {
       next(err)
     })
 })
+
+router.delete('/:id', isLoggedIn(), (req, res, next) => {
+  const productId = req.params.id;
+  const owner = req.session.currentUser._id;
+  Product.findById(productId)
+    .then((product) => {
+      if (product.owner.equals(owner)) {
+        Product.findByIdAndDelete(productId)
+          .then((removedProduct) => {
+            res.json(removedProduct)
+            res.status(200)
+          })
+          .catch(err =>
+            next(err)
+          )
+      } else {
+        next(createError(403))
+      }
+    })
+    .catch(err => {
+      next(err)
+    })
+})
+
+
 
 module.exports = router;

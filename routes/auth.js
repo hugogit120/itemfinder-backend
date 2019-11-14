@@ -26,7 +26,7 @@ router.post('/login', isNotLoggedIn(), validationLoggin(), async (req, res, next
     if (!user) {
       user = await User.findOne({ email: usernameOrEmail });
     }
-    if (!user) {
+    else if (!user) {
       next(createError(404));
     }
     else if (bcrypt.compareSync(password, user.password)) {
@@ -45,7 +45,6 @@ router.post('/login', isNotLoggedIn(), validationLoggin(), async (req, res, next
   }
 },
 );
-
 
 
 router.post(
@@ -79,8 +78,7 @@ router.post('/logout', isLoggedIn(), (req, res, next) => {
   req.session.destroy();
   res
     .status(204)
-    .send();
-  return;
+    .json({ "message": "User logged out!" });
 });
 
 router.get('/private', isLoggedIn(), (req, res, next) => {

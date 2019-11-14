@@ -88,9 +88,7 @@ answer: String
 | `/challenges/:challengeId/edit` | EditChallengePage | admin only | Form filled for edit a Challenge |
 
 
-<br>
-
-## API Endpoints (backend routes)
+<br>## API Endpoints (backend routes)
 
 | HTTP Method | URL | Request Body | Success status | Error Status | Description |
 | - | - | - | - | - | - |
