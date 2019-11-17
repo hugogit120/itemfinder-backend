@@ -6,7 +6,7 @@ const productSchema = new Schema({
   description: String,
   price: Number,
   owner: { type: Schema.Types.ObjectId, ref: 'User' },
-  image: String,
+  image: { type: String, default: "https://specials-images.forbesimg.com/imageserve/1026205392/960x0.jpg?fit=scale" },
   category: {
     type: String,
     enum: [
