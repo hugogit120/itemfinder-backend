@@ -10,7 +10,8 @@ const userSchema = new Schema({
   phone: String,
   accountNumber: String,
   direction: String,
-  rating: { type: Number, min: 1, max: 5 }
+  rating: { type: Number, min: 1, max: 5 },
+  buys: [{ type: Schema.Types.ObjectId, ref: 'Product' }]
 }, {
   timestamps: {
     createdAt: 'created_at',

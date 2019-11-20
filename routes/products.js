@@ -4,11 +4,10 @@ const Product = require('../models/Product')
 
 const {
   isLoggedIn,
-  isNotLoggedIn,
 } = require("../helpers/middlewares");
 
 router.get('/', (req, res, next) => {
-  Product.find().populate("owner")
+  Product.find({ buyed: false }).populate("owner")
     .then((product) => {
       res.json(product)
     })
@@ -19,7 +18,13 @@ router.get('/', (req, res, next) => {
 
 router.get('/:id', isLoggedIn(), (req, res, next) => {
   const productId = req.params.id
-  Product.findById(productId)
+  Product.findById(productId).populate({
+    path: 'comments',
+    populate: {
+      path: "owner"
+    }
+
+  })
     .then((product) => {
       res.json(product)
     })

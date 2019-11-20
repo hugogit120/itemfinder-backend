@@ -5,7 +5,6 @@ const Product = require("../models/Product");
 
 const {
     isLoggedIn,
-    isNotLoggedIn,
 } = require("../helpers/middlewares");
 
 router.get('/', isLoggedIn(), (req, res, next) => {
@@ -23,18 +22,21 @@ router.get('/:productId', isLoggedIn(), async (req, res, next) => {
         const { productId } = req.params;
         const comments = await Comment.find({ product: productId })
         res.json(comments)
-    } catch (err) { console.error(err) }
+    } catch (err) { next(err) }
 
 });
 
 router.post('/add/:productId', isLoggedIn(), async (req, res, next) => {
     try {
+        console.log(req.body)
         const { body } = req.body;
         const { productId } = req.params;
         const userId = req.session.currentUser._id;
-        const newComment = await Comment.create({ owner: userId, body: body, product: productId })
-        res.json(newComment)
-    } catch (err) { console.error(err) }
+        const newComment = await Comment.create({ owner: userId, product: productId, body: body })
+        const comment = await Comment.findById(newComment._id).populate("owner")
+        await Product.findByIdAndUpdate({ _id: productId }, { $push: { comments: newComment._id } }, { new: true })
+        res.json(comment)
+    } catch (err) { next(err) }
 });
 
 router.patch('/:commentId', isLoggedIn(), async (req, res, next) => {
@@ -44,12 +46,13 @@ router.patch('/:commentId', isLoggedIn(), async (req, res, next) => {
         const userId = req.session.currentUser._id;
         const answerComment = await Comment.findOne({ _id: commentId }).populate("product")
         if (answerComment.product.owner.equals(userId)) {
-            const answeredCommnet = await Comment.findByIdAndUpdate(commentId, { answer: answer }, { new: true })
+            const answeredCommnet = await Comment.findByIdAndUpdate(commentId, { answer: answer }, { new: true }).populate("owner")
+            console.log(answeredCommnet)
             res.json(answeredCommnet)
         } else {
             return res.json({ "message": "Error: Only owner of Product can answer the comment" })
         }
-    } catch (err) { console.error(err) }
+    } catch (err) { next(err) }
 });
 
 router.delete('/:commentId', isLoggedIn(), async (req, res, next) => {
@@ -63,7 +66,7 @@ router.delete('/:commentId', isLoggedIn(), async (req, res, next) => {
         } else {
             return res.json({ "message": "Error: Only owner of Product can delete comment" })
         }
-    } catch (err) { console.error(err) }
+    } catch (err) { next(err) }
 });
 
 module.exports = router

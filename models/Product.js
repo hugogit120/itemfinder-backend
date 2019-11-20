@@ -5,17 +5,14 @@ const productSchema = new Schema({
   title: String,
   description: String,
   price: Number,
+  buyed: { type: Boolean, default: false },
   owner: { type: Schema.Types.ObjectId, ref: 'User' },
   image: { type: String, default: "https://specials-images.forbesimg.com/imageserve/1026205392/960x0.jpg?fit=scale" },
   category: {
     type: String,
-    enum: [
-      'electronic',
-      'vehicle',
-      'computer',
-      'fashion',
-      'miscellaneous']
+    default: 'electronic'
   },
+  comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }]
 }, {
   timestamps: {
     createdAt: 'created_at',
