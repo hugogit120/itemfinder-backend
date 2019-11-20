@@ -54,11 +54,13 @@ const user = require('./routes/user');
 const auth = require('./routes/auth');
 const products = require('./routes/products');
 const comments = require('./routes/comments');
+const fileUpload = require('./routes/fileUpload')
 
 app.use('/user', user);
 app.use('/auth', auth);
 app.use('/products', products);
 app.use('/comments', comments);
+app.use('/file', fileUpload);
 
 app.use((req, res, next) => {
   res.status(404).json({ code: 'not found' });

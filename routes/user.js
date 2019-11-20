@@ -7,6 +7,18 @@ const {
   isLoggedIn,
 } = require("../helpers/middlewares");
 
+router.get('/products', isLoggedIn(), (req, res, next) => {
+  const id = req.session.currentUser._id;
+  Product.find({ owner: id })
+    .then(products => {
+      res.json(products);
+      res.status(200)
+    })
+    .catch(err =>
+      next(err))
+  return;
+})
+
 router.get('/:id', isLoggedIn(), (req, res, next) => {
   const { id } = req.params;
   User.findById(id).populate("buys")
@@ -56,17 +68,6 @@ router.get('/buys', isLoggedIn(), (req, res, next) => {
   User.findById(id).populate('buys')
     .then(user => {
       res.json(user);
-      res.status(200)
-    })
-    .catch(err =>
-      next(err))
-})
-
-router.get('/products', isLoggedIn(), (req, res, next) => {
-  const id = req.session.currentUser._id;
-  Product.find({ owmer: id })
-    .then(products => {
-      res.json(products);
       res.status(200)
     })
     .catch(err =>

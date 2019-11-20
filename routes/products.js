@@ -34,9 +34,9 @@ router.get('/:id', isLoggedIn(), (req, res, next) => {
 });
 
 router.post('/', isLoggedIn(), (req, res, next) => {
-  const { title, description, price, category } = req.body;
+  const { title, description, price, category, image } = req.body;
   const owner = req.session.currentUser._id;
-  Product.create({ title, description, price, owner, category })
+  Product.create({ title, description, price, owner, category, image })
     .then((product) => {
       res.json(product)
       res.status(200)
