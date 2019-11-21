@@ -7,7 +7,7 @@ const productSchema = new Schema({
   price: Number,
   buyed: { type: Boolean, default: false },
   owner: { type: Schema.Types.ObjectId, ref: 'User' },
-  image: { type: String, default: "https://specials-images.forbesimg.com/imageserve/1026205392/960x0.jpg?fit=scale" },
+  image: { type: String, default: "http://denrakaev.com/wp-content/uploads/2015/03/no-image-800x511.png" },
   category: {
     type: String,
     default: 'electronic'
